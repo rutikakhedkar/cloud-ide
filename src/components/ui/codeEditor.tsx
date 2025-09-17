@@ -16,7 +16,6 @@ function CodeEditor() {
                   <div key={i + 1}>{i + 1}</div>
                 ))}
               </div>
-              {/* Code Content */}
               <div className="flex-1 py-4 px-4">
                 <pre className="text-sm font-mono leading-6 text-foreground">
                   <code></code>

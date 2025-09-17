@@ -1,8 +1,8 @@
-import Navigation from "./ui/navigation"
-import CodeEditor from "./ui/codeEditor"
-import Terminal from "./ui/terminal"
-import FileTree from "./ui/fileTree"
-import EditorBredcrum from "./ui/editorBredcrum"
+import Navigation from "../components/ui/navigation"
+import CodeEditor from "../components/ui/codeEditor"
+import Terminal from "../components/ui/terminal"
+import FileTree from "../components/ui/fileTree"
+import EditorBredcrum from "../components/ui/editorBredcrum"
 
 
 
