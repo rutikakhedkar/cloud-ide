@@ -11,9 +11,8 @@ router.get("/google/callback", authController.googleCallback);
 router.get("/github", authController.githubAuth);
 router.get("/github/callback",authController.githubCallback);
 
-router.get('/authcheck', authMiddleware, (req, res) => {
-  res.send({ message: "Authentication successful" });
-});
+router.get('/authcheck',authMiddleware,authController.authUser);
+
 
 
 module.exports = router;

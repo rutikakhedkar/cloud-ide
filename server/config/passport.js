@@ -12,7 +12,6 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // console.log("profile",profile)
       const email = profile?.emails?.[0]?.value || `no-email-${profile.id}@google.com`;
       const name= profile?.displayName
       let user = await User.findOne({ googleId: profile.id });
@@ -39,7 +38,6 @@ passport.use(new GitHubStrategy({
     scope: ['user:email']
   },
   async (accessToken, refreshToken, profile, done) => {
-    // console.log("profile",profile)
     try {
       const email = profile.emails?.[0]?.value || `no-email-${profile.id}@github.com`;
       const name=profile?.displayName
@@ -51,7 +49,6 @@ passport.use(new GitHubStrategy({
           name:name
         });
       }
-      // Return user object only
       return done(null, user);
     } catch (err) {
       return done(err, null);

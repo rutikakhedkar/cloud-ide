@@ -1,17 +1,24 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const authRouter=require('./routers/auth-routes')
 require("dotenv").config();
+const authRouter=require('./routers/auth-routes')
 const passport= require('./config/passport')
 const cors=require('cors')
+const cookieParser=require( "cookie-parser");
+
 
 
 const app = express();
-
+app.use(passport.initialize());
 // Middleware
 app.use(express.json());
-app.use(cors())
-app.use(passport.initialize());
+
+app.use(cors({
+  origin: "http://localhost:5173", // frontend origin
+  credentials: true,               // allow cookies to be sent
+}));
+app.use(cookieParser());;
+
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
