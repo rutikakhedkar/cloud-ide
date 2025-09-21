@@ -1,23 +1,20 @@
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/Input"
 import { Github } from "lucide-react"
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 export function SignupForm() {
-  const handleGoogleAuth=async ()=>{
+  const handleGoogleAuth = async () => {
     console.log('clicked google')
-   window.location.href = "http://localhost:5000/auth/google";
-    
-   
+    window.location.href = "http://localhost:5000/auth/google";
   }
 
-   const handleGithubAuth=async ()=>{
+  const handleGithubAuth = async () => {
     console.log('clicked github')
-   window.location.href = "http://localhost:5000/auth/github";
-    
-   
+    window.location.href = "http://localhost:5000/auth/github";
   }
+  
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Logo */}
@@ -62,7 +59,7 @@ export function SignupForm() {
           </svg>
           Sign up with Google
         </Button>
-        
+
       </div>
 
       {/* Divider */}

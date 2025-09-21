@@ -5,6 +5,15 @@ import { Github } from "lucide-react"
 import {Link} from 'react-router-dom'
 
 export function LoginForm() {
+    const handleGoogleAuth = async () => {
+    console.log('clicked google')
+    window.location.href = "http://localhost:5000/auth/google";
+  }
+
+  const handleGithubAuth = async () => {
+    console.log('clicked github')
+    window.location.href = "http://localhost:5000/auth/github";
+  }
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Logo */}
@@ -23,12 +32,12 @@ export function LoginForm() {
 
       {/* OAuth Buttons */}
       <div className="space-y-3">
-        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700" onClick={handleGithubAuth}>
           <Github className="w-5 h-5 mr-2" />
           Continue with GitHub
         </Button>
 
-        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700" onClick={handleGoogleAuth}>
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
             <path
               fill="currentColor"

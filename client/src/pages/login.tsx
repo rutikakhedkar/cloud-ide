@@ -1,14 +1,8 @@
 import  {LoginForm} from "../components/ui/Auth/login-form"
 import  {CodeQuote}  from "../components/ui/Auth/code-quote"
-import { useEffect } from "react"
-import useUserStore from "../stores/auth-store"
+
 
 export default function LoginPage() {
-  const {getUserInfo,userInfo}=useUserStore();
-  useEffect(()=>{
-    console.log("userInfo",userInfo)
-    getUserInfo()
-  },[])
   return (
     <div className="min-h-screen bg-gray-900 flex">
       {/* Left side - Login Form (Mandatory) */}
