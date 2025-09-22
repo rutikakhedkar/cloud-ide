@@ -6,6 +6,8 @@ import './App.css';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import AuthChecker from './pages/authChecker';
+import Dashbord from './pages/dashboard';
+import CodeEditor from './pages/codeEditor';
 
 function App() {
 
@@ -14,7 +16,8 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-            <Route path="/" element={<AuthChecker />} /> 
+            <Route path="/" element={<Dashbord />} /> 
+            <Route path='/codeeditor' element={<CodeEditor/>}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route
