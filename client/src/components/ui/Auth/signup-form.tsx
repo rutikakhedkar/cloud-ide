@@ -3,8 +3,30 @@ import { Input } from "../../ui/Input"
 import { Github } from "lucide-react"
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { useState } from "react"
+import { toast } from "react-toastify"
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
 
 export function SignupForm() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+
+ const RegisterSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm Password is required"),
+});
+
   const handleGoogleAuth = async () => {
     console.log('clicked google')
     window.location.href = "http://localhost:5000/auth/google";
@@ -15,6 +37,19 @@ export function SignupForm() {
     window.location.href = "http://localhost:5000/auth/github";
   }
   
+    const handleRegister = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/auth/register",{
+        email,
+        password
+      });
+      if(res.status===200){
+        toast.success("Registered successfully!");
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Logo */}
@@ -71,35 +106,59 @@ export function SignupForm() {
           <span className="bg-gray-900 px-2 text-gray-400">or</span>
         </div>
       </div>
-
+ <Formik
+      initialValues={{ email: "", password: "", confirmPassword: "" }}
+      validationSchema={RegisterSchema}
+      onSubmit={(values, { setSubmitting }) => {
+        console.log("Logging in with:", values);
+        handleRegister();
+        setSubmitting(false);
+      }}
+    >
       {/* Signup Form */}
-      <div className="space-y-4">
-        <Input
+      <Form  className="space-y-4 flex flex-col border-gray-700">
+        
+        <Field
           type="email"
+          name="email"
+          value={email}
           placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
         />
+           <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
 
-        <Input
-          type="text"
-          placeholder="Username"
-          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
-        />
 
-        <Input
+        <Field
           type="password"
+          name="password"
+          value={password}
           placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
-        />
+        /> <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
-        <Input
+        <Field
           type="password"
+           name="confirmPassword"
+           value={confirmPassword}
           placeholder="Password confirmation"
+          onchange={(e) => setConfirmPassword(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
         />
+        <ErrorMessage
+              name="confirmPassword"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
-        <Button className="w-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-700">Sign Up</Button>
-      </div>
+        <Button className="w-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-700" type="submit" >Sign Up</Button>
+      </Form>
+      </Formik>
 
       {/* Links */}
       <div className="text-sm">
