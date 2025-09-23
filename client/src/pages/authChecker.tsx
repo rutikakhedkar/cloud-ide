@@ -7,7 +7,7 @@ const AuthChecker = () => {
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/authcheck", {
+      const res = await axios.get("http://localhost:5000/auth/authcheck", {
         withCredentials: true
       });
       navigate(res.data.redirect);

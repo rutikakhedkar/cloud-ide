@@ -14,10 +14,11 @@ const useUserStore = create((set) => ({
     });
 
     if (res.status === 200) {
-      const user = res.data.data.user;
-      const loggedIn = res.data.data.loggedIn;
-      const redirect=res.data.redirect;
       console.log(res)
+      const user = res.data.user;
+      const loggedIn = res.data.loggedIn;
+      const redirect=res.data.redirect;
+      
 
       set({ userInfo: user, isLoggedIn: loggedIn,redirect:redirect });
       return { user, loggedIn, redirect };
