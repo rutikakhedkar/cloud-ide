@@ -13,6 +13,7 @@ router.get("/github/callback",authController.githubCallback);
 
 router.get('/authcheck',authMiddleware,authController.authUser);
 
-
+router.post('/login',authController.login);
+router.post('/register',authController.register);
 
 module.exports = router;

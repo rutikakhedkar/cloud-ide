@@ -57,38 +57,64 @@ const githubCallback = (req, res, next) => {
   })(req, res, next);
 };
 
-const register=async(req,res)=>{
+const register = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
   try {
-   const user = await User.findById(decoded.id).select("-password"); // exclude password // exclude password
-    if (!user) {
-      return res.status(401).json({message: "User not found", data:{loggedIn: false}  });
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "User already exists, please log in", data: { loggedIn: false } });
     }
-    res.json({
-      message: "Login successful",
+
+    const newUser = await User.create({ email, password }); // Make sure password is hashed in model
+
+    res.status(201).json({
+      message: "Registration successful",
       data: {
         loggedIn: true,
-        user
-      }
+        user: { id: newUser._id, email: newUser.email }, // exclude password
+      },
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
+
 
 
 const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
   try {
-    const user = await User.findById(req.user.id).select("-password"); 
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "User not found", data: { loggedIn: false } });
+      return res
+        .status(401)
+        .json({ message: "User not found", data: { loggedIn: false } });
     }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials", data: { loggedIn: false } });
+    }
+
     res.json({
       message: "Login successful",
       data: {
         loggedIn: true,
-        user
-      }
+        user: { id: user._id, email: user.email }, // exclude password
+      },
     });
   } catch (err) {
     console.error(err);
@@ -125,5 +151,6 @@ module.exports = {
   githubAuth,
   githubCallback,
   login,
-  authUser
+  authUser,
+  register
 };
