@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const authRouter=require('./routers/auth-routes')
+const workspaceRouter=require('./routers/workspace-routes')
 const passport= require('./config/passport')
 const cors=require('cors')
 const cookieParser=require( "cookie-parser");
@@ -29,6 +30,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch(err => console.error("❌ MongoDB connection error:", err));
 
 app.use('/auth',authRouter)
+app.use('/workspace',workspaceRouter)
 // Sample Route
 app.get("/", (req, res) => {
   res.send("Hello from Express + Mongoose!");

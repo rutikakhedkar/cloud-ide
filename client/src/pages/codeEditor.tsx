@@ -1,13 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../components/ui/button"
 import { Plus, ChevronRight, ChevronDown, File, Folder, FolderOpen, Terminal } from "lucide-react"
+import axios from "axios"
 
 export default function CodeEditor() {
   const [selectedFile, setSelectedFile] = useState("README.md")
   const [expandedFolders, setExpandedFolders] = useState<string[]>(["src", "public"])
   const [isTerminalExpanded, setIsTerminalExpanded] = useState(true)
+
+  const [fileTrees, setFileTrees] = useState([])
+
+  useEffect(() => {
+    const loadStack = async () => {
+      const res = await axios.get(`http://localhost:5000/workspace/load/react`);
+      console.log(res.data.files);
+    };
+    loadStack()
+  }, [])
+
 
   // File tree structure
   const fileTree = [
@@ -116,29 +128,7 @@ export default App`,
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       {/* Top Header */}
-      <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">
-              b
-            </div>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 h-8">
-              Open in bolt.new | AI →
-            </Button>
-          </div>
-        </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-1 bg-gray-700 px-2 py-1 rounded text-xs">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span>README.md</span>
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          </div>
-          <div className="text-xs text-gray-400">
-            vitejsviteobn8gj8-payt--5173--96435430.local-credentialless.webcontainer.io
-          </div>
-        </div>
-      </div>
 
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col">
@@ -188,11 +178,10 @@ export default App`,
                                 <button
                                   key={childIndex}
                                   onClick={() => setSelectedFile(child)}
-                                  className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${
-                                    selectedFile === child
+                                  className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${selectedFile === child
                                       ? "bg-gray-600 text-white"
                                       : "text-gray-300 hover:text-white hover:bg-gray-700"
-                                  }`}
+                                    }`}
                                 >
                                   <File className="w-4 h-4" />
                                   <span>{child}</span>
@@ -204,11 +193,10 @@ export default App`,
                       ) : (
                         <button
                           onClick={() => setSelectedFile(item.name)}
-                          className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${
-                            selectedFile === item.name
+                          className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${selectedFile === item.name
                               ? "bg-gray-600 text-white"
                               : "text-gray-300 hover:text-white hover:bg-gray-700"
-                          }`}
+                            }`}
                         >
                           <File className="w-4 h-4" />
                           <span>{item.name}</span>
@@ -321,7 +309,7 @@ export default App`,
             </div>
           )}
         </div>
-        
+
       </div>
     </div>
   )

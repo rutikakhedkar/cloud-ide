@@ -1,6 +1,3 @@
-
-import React, { useState } from "react";
-
 import AImodule from "./AIHelper/aimodule";
 
 function CodeEditor() {

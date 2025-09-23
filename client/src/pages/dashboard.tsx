@@ -1,45 +1,31 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { Plus, Eye, GitFork, X } from "lucide-react"
-import Navigation from "../components/ui/navigation"
 import { useNavigate } from "react-router-dom"
+import useUserStore from "../stores/auth-store"
 
 // Tech stack data
 const techStacks = {
   Popular: [
-    { name: "Astro Basics", subtitle: "Node.js", icon: "🚀", color: "bg-pink-500" },
-    { name: "Next.js", subtitle: "Node.js", icon: "N", color: "bg-black" },
-    { name: "Nuxt", subtitle: "Node.js", icon: "△", color: "bg-green-500" },
-    { name: "React", subtitle: "TypeScript", icon: "⚛", color: "bg-blue-500" },
-  ],
-  Frontend: [
-    { name: "Vanilla", subtitle: "JavaScript", icon: "JS", color: "bg-yellow-500" },
-    { name: "Vanilla", subtitle: "TypeScript", icon: "TS", color: "bg-blue-600" },
-    { name: "Static", subtitle: "HTML/JS/CSS", icon: "📄", color: "bg-orange-500" },
-    { name: "Node.js", subtitle: "Blank project", icon: "⬢", color: "bg-green-600" },
-  ],
-  Backend: [
-    { name: "Angular", subtitle: "TypeScript", icon: "A", color: "bg-red-500" },
-    { name: "Vue", subtitle: "JavaScript", icon: "V", color: "bg-green-400" },
-    { name: "WebContainer API", subtitle: "Node.js", icon: "📦", color: "bg-gray-600" },
+    { name: "Angular", subtitle: "Angular", icon: "🚀", color: "bg-pink-500" },
+    { name: "Next.js", subtitle: "Next.js", icon: "N", color: "bg-black" },
+    { name: "Vue", subtitle: "Vue", icon: "△", color: "bg-green-500" },
+    { name: "React", subtitle: "React", icon: "⚛", color: "bg-blue-500" },
   ],
 }
 
 export default function Dashboard() {
-  const naivgation= useNavigate()
+  const naivgation = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("Popular")
+  const {userInfo, isLoggedIn, getUserInfo}= useUserStore()
+
+  useEffect(() => {
+    getUserInfo(); // fetch data on mount
+  }, []);
 
   const tabs = [
     "Popular",
-    "Frontend",
-    "Backend",
-    "Fullstack",
-    "Docs, Blogs & Slides",
-    "Creative",
-    "Mobile & VR",
-    "Vanilla",
-    "Native Languages",
   ]
 
   return (
@@ -104,7 +90,7 @@ export default function Dashboard() {
               <Plus className="w-4 h-4" />
               <div className="text-left">
                 <div className="text-sm font-medium">New project</div>
-                <div className="text-xs text-gray-400">from one of StackBlitz starter templates</div>
+                
               </div>
             </Button>
           </div>
@@ -141,7 +127,7 @@ export default function Dashboard() {
                 <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs">
                   ⚡
                 </div>
-                <span className="text-white cursor-pointer" onClick={()=>naivgation('/codeeditor')}>Vitejs - Vite (duplicated)</span>
+                <span className="text-white cursor-pointer" onClick={() => naivgation('/codeeditor')}>Vitejs - Vite (duplicated)</span>
               </div>
               <div className="col-span-4 text-gray-400">Next generation frontend tooling. It's fast!</div>
               <div className="col-span-1 flex items-center space-x-1 text-gray-400">
@@ -181,24 +167,7 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {/* Modal Tabs */}
-            <div className="border-b border-gray-700">
-              <div className="flex overflow-x-auto">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 ${
-                      activeTab === tab
-                        ? "border-green-500 text-green-500"
-                        : "border-transparent text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-            </div>
+           
 
             {/* Modal Content */}
             <div className="p-6 overflow-y-auto max-h-96">
@@ -223,6 +192,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
+            
           </div>
         </div>
       )}
