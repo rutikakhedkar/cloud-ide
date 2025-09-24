@@ -1,18 +1,35 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "../components/ui/button"
-import { Plus, ChevronRight, ChevronDown, File, Folder, FolderOpen, Terminal } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Button } from "../components/ui/button";
+import {
+  Plus,
+  ChevronRight,
+  ChevronDown,
+  File,
+  Folder,
+  FolderOpen,
+  Terminal,
+} from "lucide-react";
+import axios from "axios";
 
 export default function CodeEditor() {
-  const [selectedFile, setSelectedFile] = useState("README.md")
-  const [expandedFolders, setExpandedFolders] = useState<string[]>(["src", "public"])
-  const [isTerminalExpanded, setIsTerminalExpanded] = useState(true)
+  const [selectedFile, setSelectedFile] = useState("README.md");
+  const [expandedFolders, setExpandedFolders] = useState<string[]>([
+    "src",
+    "public",
+  ]);
+  const [isTerminalExpanded, setIsTerminalExpanded] = useState(true);
+  const [fileStructure, setFileStructure]= useState([])
 
   // File tree structure
   const fileTree = [
     { name: "public", type: "folder", children: ["vite.svg", "favicon.ico"] },
-    { name: "src", type: "folder", children: ["App.jsx", "App.css", "main.jsx", "index.css"] },
+    {
+      name: "src",
+      type: "folder",
+      children: ["App.jsx", "App.css", "main.jsx", "index.css"],
+    },
     { name: ".gitignore", type: "file" },
     { name: "eslint.config.js", type: "file" },
     { name: "index.html", type: "file" },
@@ -20,7 +37,7 @@ export default function CodeEditor() {
     { name: "package.json", type: "file" },
     { name: "README.md", type: "file" },
     { name: "vite.config.js", type: "file" },
-  ]
+  ];
 
   const fileContents: { [key: string]: string } = {
     "README.md": `# Vite + React
@@ -94,24 +111,37 @@ export default App`,
     "vite": "^5.4.1"
   }
 }`,
-  }
+  };
 
   const toggleFolder = (folderName: string) => {
     setExpandedFolders((prev) =>
-      prev.includes(folderName) ? prev.filter((f) => f !== folderName) : [...prev, folderName],
-    )
-  }
+      prev.includes(folderName)
+        ? prev.filter((f) => f !== folderName)
+        : [...prev, folderName]
+    );
+  };
 
   const getFileIcon = (fileName: string) => {
-    if (fileName.endsWith(".jsx") || fileName.endsWith(".js")) return "📄"
-    if (fileName.endsWith(".css")) return "🎨"
-    if (fileName.endsWith(".html")) return "🌐"
-    if (fileName.endsWith(".json")) return "📋"
-    if (fileName.endsWith(".md")) return "📝"
-    if (fileName.endsWith(".svg")) return "🖼️"
-    if (fileName.endsWith(".ico")) return "🔷"
-    return "📄"
-  }
+    if (fileName.endsWith(".jsx") || fileName.endsWith(".js")) return "📄";
+    if (fileName.endsWith(".css")) return "🎨";
+    if (fileName.endsWith(".html")) return "🌐";
+    if (fileName.endsWith(".json")) return "📋";
+    if (fileName.endsWith(".md")) return "📝";
+    if (fileName.endsWith(".svg")) return "🖼️";
+    if (fileName.endsWith(".ico")) return "🔷";
+    return "📄";
+  };
+
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    const loadStack = async (stack:string) => {
+      const res = await axios.get(`http://localhost:5000/workspace/load/${stack}`);
+      console.log(res.data.fileTree)
+      setFileStructure(res.data.fileTree)
+    };
+    loadStack('vue');
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
@@ -147,7 +177,9 @@ export default App`,
           <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
             {/* Project Section */}
             <div className="p-4 border-b border-gray-700">
-              <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">PROJECT</div>
+              <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                PROJECT
+              </div>
               <button className="flex items-center space-x-2 text-sm text-gray-300 hover:text-white">
                 <div className="w-4 h-4">📁</div>
                 <span>Create a repository</span>
@@ -157,12 +189,16 @@ export default App`,
             {/* Info and Files Section */}
             <div className="flex-1 overflow-y-auto">
               <div className="p-4">
-                <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">INFO</div>
-                <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">FILES</div>
+                <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                  INFO
+                </div>
+                <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                  FILES
+                </div>
 
                 {/* File Tree */}
                 <div className="space-y-1">
-                  {fileTree.map((item, index) => (
+                  {fileStructure.map((item, index) => (
                     <div key={index}>
                       {item.type === "folder" ? (
                         <div>
@@ -182,24 +218,25 @@ export default App`,
                             )}
                             <span>{item.name}</span>
                           </button>
-                          {expandedFolders.includes(item.name) && item.children && (
-                            <div className="ml-6 space-y-1">
-                              {item.children.map((child, childIndex) => (
-                                <button
-                                  key={childIndex}
-                                  onClick={() => setSelectedFile(child)}
-                                  className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${
-                                    selectedFile === child
-                                      ? "bg-gray-600 text-white"
-                                      : "text-gray-300 hover:text-white hover:bg-gray-700"
-                                  }`}
-                                >
-                                  <File className="w-4 h-4" />
-                                  <span>{child}</span>
-                                </button>
-                              ))}
-                            </div>
-                          )}
+                          {expandedFolders.includes(item.name) &&
+                            item.children && (
+                              <div className="ml-6 space-y-1">
+                                {item.children.map((child, childIndex) => (
+                                  <button
+                                    key={childIndex}
+                                    onClick={() => setSelectedFile(child)}
+                                    className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${
+                                      selectedFile === child
+                                        ? "bg-gray-600 text-white"
+                                        : "text-gray-300 hover:text-white hover:bg-gray-700"
+                                    }`}
+                                  >
+                                    <File className="w-4 h-4" />
+                                    <span>{child.name}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                         </div>
                       ) : (
                         <button
@@ -245,7 +282,8 @@ export default App`,
                   </div>
                   <div className="flex-1">
                     <pre className="text-gray-300 font-mono text-sm leading-6 whitespace-pre-wrap">
-                      {fileContents[selectedFile] || `// ${selectedFile}\n// File content would appear here`}
+                      {fileContents[selectedFile] ||
+                        `// ${selectedFile}\n// File content would appear here`}
                     </pre>
                   </div>
                 </div>
@@ -267,20 +305,30 @@ export default App`,
               </div>
 
               {/* Main Heading */}
-              <h1 className="text-6xl font-bold text-gray-800 mb-8">Vite + React</h1>
+              <h1 className="text-6xl font-bold text-gray-800 mb-8">
+                Vite + React
+              </h1>
 
               {/* Counter */}
               <div className="mb-8">
                 <p className="text-xl text-gray-600 mb-4">count is 0</p>
-                <Button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2">count is 0</Button>
+                <Button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2">
+                  count is 0
+                </Button>
               </div>
 
               {/* Instructions */}
               <div className="text-gray-600 space-y-2">
                 <p>
-                  Edit <code className="bg-gray-100 px-2 py-1 rounded text-sm">src/App.jsx</code> and save to test HMR
+                  Edit{" "}
+                  <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                    src/App.jsx
+                  </code>{" "}
+                  and save to test HMR
                 </p>
-                <p className="text-sm">Click on the Vite and React logos to learn more</p>
+                <p className="text-sm">
+                  Click on the Vite and React logos to learn more
+                </p>
               </div>
             </div>
           </div>
@@ -301,18 +349,20 @@ export default App`,
 
           {isTerminalExpanded && (
             <div className="bg-gray-900 p-4 text-sm font-mono">
-              <div className="text-green-400 mb-2">VITE v7.1.5 ready in 3362 ms</div>
+              <div className="text-green-400 mb-2">
+                VITE v7.1.5 ready in 3362 ms
+              </div>
               <div className="text-gray-300 mb-1">
                 <span className="text-green-400">➜</span> Local:{" "}
                 <span className="text-blue-400">http://localhost:5173/</span>
               </div>
               <div className="text-gray-300 mb-1">
-                <span className="text-green-400">➜</span> Network: use <span className="text-yellow-400">--host</span>{" "}
-                to expose
+                <span className="text-green-400">➜</span> Network: use{" "}
+                <span className="text-yellow-400">--host</span> to expose
               </div>
               <div className="text-gray-300">
-                <span className="text-green-400">➜</span> press <span className="text-yellow-400">h + enter</span> to
-                show help
+                <span className="text-green-400">➜</span> press{" "}
+                <span className="text-yellow-400">h + enter</span> to show help
               </div>
               <div className="mt-2">
                 <span className="text-green-400">❯</span>
@@ -321,8 +371,7 @@ export default App`,
             </div>
           )}
         </div>
-        
       </div>
     </div>
-  )
+  );
 }
