@@ -17,9 +17,11 @@ async function buildTree(dir) {
           children: await buildTree(fullPath), // recurse
         };
       } else {
+        const content = await fs.readFile(fullPath, "utf-8");
         return {
           name: entry.name,
           type: "file",
+          content:content
         };
       }
     })
