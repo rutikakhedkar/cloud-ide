@@ -1,46 +1,30 @@
-import { useState } from "react"
-import { Button } from "../components/ui/button"
-import { Plus, Eye, GitFork, X } from "lucide-react"
-import Navigation from "../components/ui/navigation"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { Button } from "../components/ui/button";
+import { Plus, Eye, GitFork, X } from "lucide-react";
+import Navigation from "../components/ui/navigation";
+import { useNavigate } from "react-router-dom";
 
 // Tech stack data
 const techStacks = {
   Popular: [
-    { name: "Astro Basics", subtitle: "Node.js", icon: "🚀", color: "bg-pink-500" },
-    { name: "Next.js", subtitle: "Node.js", icon: "N", color: "bg-black" },
-    { name: "Nuxt", subtitle: "Node.js", icon: "△", color: "bg-green-500" },
     { name: "React", subtitle: "TypeScript", icon: "⚛", color: "bg-blue-500" },
-  ],
-  Frontend: [
-    { name: "Vanilla", subtitle: "JavaScript", icon: "JS", color: "bg-yellow-500" },
-    { name: "Vanilla", subtitle: "TypeScript", icon: "TS", color: "bg-blue-600" },
-    { name: "Static", subtitle: "HTML/JS/CSS", icon: "📄", color: "bg-orange-500" },
-    { name: "Node.js", subtitle: "Blank project", icon: "⬢", color: "bg-green-600" },
-  ],
-  Backend: [
     { name: "Angular", subtitle: "TypeScript", icon: "A", color: "bg-red-500" },
     { name: "Vue", subtitle: "JavaScript", icon: "V", color: "bg-green-400" },
-    { name: "WebContainer API", subtitle: "Node.js", icon: "📦", color: "bg-gray-600" },
   ],
-}
+};
 
 export default function Dashboard() {
-  const naivgation= useNavigate()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("Popular")
+  const naivgation = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("Popular");
 
   const tabs = [
     "Popular",
-    "Frontend",
-    "Backend",
-    "Fullstack",
-    "Docs, Blogs & Slides",
-    "Creative",
-    "Mobile & VR",
-    "Vanilla",
-    "Native Languages",
-  ]
+  ];
+
+  const showStack = (stack: string) => {
+    naivgation(`/codeeditor/${stack}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex">
@@ -56,8 +40,18 @@ export default function Dashboard() {
               <div className="text-sm font-medium">rutikakhadekar</div>
               <div className="text-xs text-gray-400">Free plan</div>
             </div>
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg
+              className="w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </div>
         </div>
@@ -104,7 +98,9 @@ export default function Dashboard() {
               <Plus className="w-4 h-4" />
               <div className="text-left">
                 <div className="text-sm font-medium">New project</div>
-                <div className="text-xs text-gray-400">from one of StackBlitz starter templates</div>
+                <div className="text-xs text-gray-400">
+                  from one of StackBlitz starter templates
+                </div>
               </div>
             </Button>
           </div>
@@ -116,8 +112,18 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold">Recent projects</h2>
             <button className="text-sm text-gray-400 hover:text-white flex items-center space-x-1">
               <span>Show all</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </div>
@@ -133,17 +139,27 @@ export default function Dashboard() {
               <div className="col-span-1">Updated</div>
             </div>
 
-            <div className="grid grid-cols-12 gap-4 p-4 hover:bg-gray-750 items-center" >
+            <div className="grid grid-cols-12 gap-4 p-4 hover:bg-gray-750 items-center">
               <div className="col-span-1">
-                <input type="checkbox" className="w-4 h-4 bg-gray-700 border-gray-600 rounded" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 bg-gray-700 border-gray-600 rounded"
+                />
               </div>
               <div className="col-span-4 flex items-center space-x-3">
                 <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs">
                   ⚡
                 </div>
-                <span className="text-white cursor-pointer" onClick={()=>naivgation('/codeeditor')}>Vitejs - Vite (duplicated)</span>
+                <span
+                  className="text-white cursor-pointer"
+                  onClick={() => naivgation("/codeeditor")}
+                >
+                  Vitejs - Vite (duplicated)
+                </span>
               </div>
-              <div className="col-span-4 text-gray-400">Next generation frontend tooling. It's fast!</div>
+              <div className="col-span-4 text-gray-400">
+                Next generation frontend tooling. It's fast!
+              </div>
               <div className="col-span-1 flex items-center space-x-1 text-gray-400">
                 <Eye className="w-4 h-4" />
                 <span>1</span>
@@ -171,12 +187,25 @@ export default function Dashboard() {
                     R
                   </div>
                   <span className="text-white font-medium">rutikakhadekar</span>
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <svg
+                    className="w-4 h-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-white">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-white"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -187,7 +216,10 @@ export default function Dashboard() {
                 {tabs.map((tab) => (
                   <button
                     key={tab}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // ✅ prevent bubbling
+                      setActiveTab(tab);
+                    }}
                     className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 ${
                       activeTab === tab
                         ? "border-green-500 text-green-500"
@@ -203,10 +235,14 @@ export default function Dashboard() {
             {/* Modal Content */}
             <div className="p-6 overflow-y-auto max-h-96">
               <div className="grid grid-cols-3 gap-4">
-                {(techStacks[activeTab as keyof typeof techStacks] || techStacks.Popular).map((stack, index) => (
+                {(
+                  techStacks[activeTab as keyof typeof techStacks] ||
+                  techStacks.Popular
+                ).map((stack, index) => (
                   <div
                     key={index}
                     className="p-4 bg-gray-700 rounded-lg hover:bg-gray-600 cursor-pointer transition-colors"
+                    onClick={()=>{showStack(stack.name)}}
                   >
                     <div className="flex items-center space-x-3">
                       <div
@@ -214,9 +250,13 @@ export default function Dashboard() {
                       >
                         {stack.icon}
                       </div>
-                      <div>
-                        <div className="text-white font-medium">{stack.name}</div>
-                        <div className="text-gray-400 text-sm">{stack.subtitle}</div>
+                      <div >
+                        <div className="text-white font-medium">
+                          {stack.name}
+                        </div>
+                        <div className="text-gray-400 text-sm">
+                          {stack.subtitle}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -227,5 +267,5 @@ export default function Dashboard() {
         </div>
       )}
     </div>
-  )
+  );
 }

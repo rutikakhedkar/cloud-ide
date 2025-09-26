@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import {
@@ -12,6 +10,8 @@ import {
   Terminal,
 } from "lucide-react";
 import axios from "axios";
+import useStackStore from "../stores/stack-store";
+import { useParams } from "react-router-dom";
 
 export default function CodeEditor() {
   const [selectedFile, setSelectedFile] = useState("README.md");
@@ -20,7 +20,8 @@ export default function CodeEditor() {
     "public",
   ]);
   const [isTerminalExpanded, setIsTerminalExpanded] = useState(true);
-  const [fileStructure, setFileStructure]= useState([])
+  const [fileContent, setFileContent] = useState([]);
+  const { getStackInfo, stackInfo } = useStackStore();
 
   // File tree structure
   const fileTree = [
@@ -132,16 +133,15 @@ export default App`,
     return "📄";
   };
 
-  const [files, setFiles] = useState([]);
+  let { stack } = useParams();
 
   useEffect(() => {
-    const loadStack = async (stack:string) => {
-      const res = await axios.get(`http://localhost:5000/workspace/load/${stack}`);
-      console.log(res.data.fileTree)
-      setFileStructure(res.data.fileTree)
-    };
-    loadStack('vue');
-  }, []);
+    if (stack) {
+      getStackInfo(stack?.toLowerCase());
+    }
+  }, [getStackInfo]);
+
+  console.log(stackInfo, "stackInfo");
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
@@ -198,7 +198,7 @@ export default App`,
 
                 {/* File Tree */}
                 <div className="space-y-1">
-                  {fileStructure.map((item, index) => (
+                  {stackInfo.map((item, index) => (
                     <div key={index}>
                       {item.type === "folder" ? (
                         <div>
@@ -224,7 +224,10 @@ export default App`,
                                 {item.children.map((child, childIndex) => (
                                   <button
                                     key={childIndex}
-                                    onClick={() => setSelectedFile(child)}
+                                    onClick={() => {
+                                      setSelectedFile(child.name);
+                                      setFileContent(child.content);
+                                    }}
                                     className={`flex items-center space-x-2 w-full text-left text-sm px-2 py-1 rounded ${
                                       selectedFile === child
                                         ? "bg-gray-600 text-white"
@@ -270,9 +273,10 @@ export default App`,
             </div>
 
             {/* Code Content */}
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 h-64 overflow-y-auto">
               <div className="p-4">
                 <div className="flex text-xs text-gray-500 mb-4">
+                  {/* Line numbers */}
                   <div className="w-8 text-right pr-4 select-none">
                     {fileContents[selectedFile]?.split("\n").map((_, index) => (
                       <div key={index} className="leading-6">
@@ -280,10 +284,12 @@ export default App`,
                       </div>
                     ))}
                   </div>
+
+                  {/* Editor content */}
                   <div className="flex-1">
                     <pre className="text-gray-300 font-mono text-sm leading-6 whitespace-pre-wrap">
                       {fileContents[selectedFile] ||
-                        `// ${selectedFile}\n// File content would appear here`}
+                        `// ${selectedFile}\n// ${fileContent}`}
                     </pre>
                   </div>
                 </div>
