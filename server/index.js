@@ -5,7 +5,7 @@ const authRouter=require('./routers/auth-routes')
 const workspaceRouter=require('./routers/workspace-routes')
 const passport= require('./config/passport')
 const cors=require('cors')
-const cookieParser=require( "cookie-parser");
+const cookieParser=require("cookie-parser");
 
 
 

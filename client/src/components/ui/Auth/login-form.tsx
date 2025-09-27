@@ -1,19 +1,50 @@
-import { Button } from "../../ui/button"
-import { Input } from "../../ui/Input"
-import { Github } from "lucide-react"
+import { useState } from "react";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/Input";
+import { Github } from "lucide-react";
+import axios from "axios";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function LoginForm() {
-    const handleGoogleAuth = async () => {
-    console.log('clicked google')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  password: Yup.string()
+    .required("Password is required"),
+});
+
+  const handleGoogleAuth = async () => {
+    console.log("clicked google");
     window.location.href = "http://localhost:5000/auth/google";
-  }
+  };
 
   const handleGithubAuth = async () => {
-    console.log('clicked github')
+    console.log("clicked github");
     window.location.href = "http://localhost:5000/auth/github";
-  }
+  };
+
+  const handleSignIn = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/auth/login",{
+        email,
+        password
+      });
+      if(res.data.success){
+        toast.success("Logged in successfully!");
+      }
+    } catch (error) {
+      console.error("Error during sign in:", error);
+    }
+  };
+
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Logo */}
@@ -27,17 +58,28 @@ export function LoginForm() {
       {/* Welcome Message */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-white">Welcome back</h1>
-        <p className="text-gray-400">Sign in to CodeBlitz with one of the options below or your credentials.</p>
+        <p className="text-gray-400">
+          Sign in to CodeBlitz with one of the options below or your
+          credentials.
+        </p>
       </div>
 
       {/* OAuth Buttons */}
       <div className="space-y-3">
-        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700" onClick={handleGithubAuth}>
+        <Button
+          variant="outline"
+          className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
+          onClick={handleGithubAuth}
+        >
           <Github className="w-5 h-5 mr-2" />
           Continue with GitHub
         </Button>
 
-        <Button variant="outline" className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700" onClick={handleGoogleAuth}>
+        <Button
+          variant="outline"
+          className="w-full bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
+          onClick={handleGoogleAuth}
+        >
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
             <path
               fill="currentColor"
@@ -69,22 +111,49 @@ export function LoginForm() {
           <span className="bg-gray-900 px-2 text-gray-400">or</span>
         </div>
       </div>
-
+    <Formik
+      initialValues={{ email: "", password: "" }}
+      validationSchema={LoginSchema}
+      onSubmit={(values, { setSubmitting }) => {
+        console.log("Logging in with:", values);
+        handleSignIn();
+        setSubmitting(false);
+      }}
+    >
       {/* Email Form */}
-      <div className="space-y-4">
-        <Input
+      <Form className="space-y-4 flex flex-col border-gray-700">
+        <Field
           type="email"
           placeholder="Email or Username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
-        />
+        /><ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
 
-        <Button className="w-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-700">Sign In</Button>
-      </div>
+        <Field
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
+        /> <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+
+        <Button
+          className="w-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"
+          type="submit"
+        >
+          Sign In
+        </Button>
+      </Form>
+      </Formik>
 
       {/* Links */}
       <div className="space-y-2 text-sm">
         <div>
-          <Link to="/signup" className="text-gray-400 hover:text-white underline">
+          <Link
+            to="/signup"
+            className="text-gray-400 hover:text-white underline"
+          >
             Don't have an account? Create one here.
           </Link>
         </div>
@@ -113,5 +182,5 @@ export function LoginForm() {
         .
       </div>
     </div>
-  )
+  );
 }

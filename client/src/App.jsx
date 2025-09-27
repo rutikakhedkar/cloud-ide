@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Dashbord />} /> 
-            <Route path='/codeeditor' element={<CodeEditor/>}/>
+            <Route path='/codeeditor/:stack' element={<CodeEditor/>}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         
